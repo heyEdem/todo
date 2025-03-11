@@ -1,0 +1,33 @@
+name: Deploy ToDo App to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main  # Change if using a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.REGION }}
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ secrets.EB_APP_NAME }} \
+            --version-label "deploy-$(date +%Y%m%d%H%M%S)" \
+            --source-bundle S3Bucket=${{ secrets.BUCKET_NAME }},S3Key=todo-app.zip
+
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ secrets.EB_APP_NAME }} \
+            --environment-name ${{ secrets.EB_ENV_NAME }} \
+            --version-label "deploy-$(date +%Y%m%d%H%M%S)"
