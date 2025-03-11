@@ -36,7 +36,7 @@ public class Todo {
     public static void main(String[] args) throws Exception {
         // Use port 5000 as default or use the PORT environment variable
         String port = System.getenv("PORT");
-        int serverPort = (port != null && !port.isEmpty()) ? Integer.parseInt(port) : 7000;
+        int serverPort = (port != null && !port.isEmpty()) ? Integer.parseInt(port) : 5000;
 
         // Create HTTP server listening on the specified port
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
